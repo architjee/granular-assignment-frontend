@@ -1,46 +1,60 @@
 import axios from 'axios';
 import { Component } from 'react';
 import './App.css';
-
-
-export default class App extends Component {
-  constructor(props) {
-    // Required step: always call the parent class' constructor
-    super(props);
-
-    // Set the state directly. Use props if necessary.
-    this.state = {
-      loggedIn: false,
-      currentState: "not-panic",
-
-
-      // Note: think carefully before initializing
-      // state based on props!
-      someInitialValue: this.props.initialValue
-    }
+import SearchResults from './SearchResults';
+class App extends Component {
+  componentDidMount() {
+    this.fetchDataFromBackend(this.state.searchQuery)
   }
-
-  async fetchDataFromBackend(location){
+  async fetchDataFromBackend(location) {
     try {
-      const response = await axios.get('https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search.php?',{ params: { q: 'boston',format: 'jsonv2' } });
-      console.log('response from axios request',response);
+      console.log('we are going to fire query for ', location)
+      // const response = await axios.get('https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search.php?', { params: { q: 'boston', format: 'jsonv2' } });
+      const response = await axios.get('https://nominatim.openstreetmap.org/search.php?', { params: { q: location, format: 'jsonv2' } });
+
+      console.log('response from axios request', response);
       this.setState({
-        currentState: response.data
+        queryResults: response.data
       });
     } catch (error) {
       console.error(error);
     }
   }
-  componentDidMount() {
-    this.fetchDataFromBackend('boston')
-    
+  constructor(props) {
+    super(props);
+    this.state = { searchQuery: 'Boston MA', queryResults: [] };
 
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  handleChange(event) {
+    this.setState({ searchQuery: event.target.value });
+    this.fetchDataFromBackend(this.state.searchQuery)
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    alert('A name was submitted: ' + this.state.searchQuery);
+  }
+
   render() {
-    return (
-      <div className="App">
-        Learn React
-      </div>
+    return (<div>
+
+
+      <form className="dropdown" onSubmit={this.handleSubmit}>
+        <label >
+          Name:
+          <input type="text" value={this.state.searchQuery} onChange={this.handleChange} />
+        </label>
+        <div className="dropdown-content">
+          <SearchResults results={this.state.queryResults}></SearchResults>
+        </div>
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
     );
   }
 }
+
+export default App
