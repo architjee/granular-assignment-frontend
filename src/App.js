@@ -1,14 +1,21 @@
 
 import axios from 'axios';
-import { Component } from 'react';
+import { Component, createRef } from 'react';
 import './App.css';
 import SearchResults from './SearchResults';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, Polygon, TileLayer, Marker, Popup } from 'react-leaflet';
 
-
+const polygon = [
+  [51.515, -0.09],
+  [51.52, -0.1],
+  [51.52, -0.12],
+]
+const purpleOptions = { color: 'purple' }
 class App extends Component {
   componentDidMount() {
     this.fetchDataFromBackend(this.state.searchQuery)
+
+
   }
   async fetchDataFromBackend(location) {
     try {
@@ -26,10 +33,17 @@ class App extends Component {
   }
   constructor(props) {
     super(props);
-    this.state = { searchQuery: 'Boston MA', queryResults: [] };
+    this.state = {
+      searchState: true,
+      searchQuery: 'Boston MA', queryResults: [],
+      selectedCentre: [],
+    };
+    this.inputFocus = createRef()
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleBlur = this.handleBlur.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
   }
 
   handleChange(event) {
@@ -42,32 +56,50 @@ class App extends Component {
     alert('A name was submitted: ' + this.state.searchQuery);
   }
 
+
+  handleBlur(event) {
+    this.setState({ searchState: false });
+  }
+
+  handleFocus(event) {
+    this.setState({ searchState: true });
+  }
+
+
   render() {
+    
     return (<div>
 
 
-      <form className="dropdown" onSubmit={this.handleSubmit}>
+
+      <MapContainer
+        center={[51.505, -0.09]}
+        zoom={13}
+        scrollWheelZoom={true}
+        style={{ width: "600px", height: "calc(400px)" }}
+      >
+        <TileLayer
+          url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        />
+        <Polygon pathOptions={purpleOptions} positions={polygon} />
+
+      </MapContainer>
+      <form onSubmit={this.handleSubmit}>
         <label >
           Name:
-          <input type="text" value={this.state.searchQuery} onChange={this.handleChange} />
+          <input ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery} onBlur={this.handleBlur} onFocus={this.handleFocus} onChange={this.handleChange} />
         </label>
-        <div className="dropdown-content">
-          <SearchResults results={this.state.queryResults}></SearchResults>
-        </div>
-        <input type="submit" value="Submit" />
-      </form>
+        {this.state.searchState &&
 
-      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-  <TileLayer
-    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  />
-  <Marker position={[51.505, -0.09]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-</MapContainer>
+          <div className="dropdown-content">
+            {<SearchResults results={this.state.queryResults}></SearchResults>}
+          </div>
+        }
+        <input type="submit" value="Submit" />
+
+        {this.state.selectedCentre}
+      </form>
     </div>
     );
   }
