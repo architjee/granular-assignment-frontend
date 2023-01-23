@@ -6,7 +6,7 @@ import SearchResults from './SearchResults';
 import { MapContainer, Polygon, TileLayer} from 'react-leaflet';
 import { useNavigate, useLocation } from "react-router-dom";
 import { ConvertPlaceObject } from './Util';
-var HOSTED_URL = "http://localhost:3000/#"
+var HOSTED_URL = "https://granular-assignment-frontend.netlify.app/#"
 
 
 class App extends Component {
