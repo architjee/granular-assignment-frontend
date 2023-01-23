@@ -41,7 +41,7 @@ class App extends Component {
 
   }
   async fetchDataFromBackend(location) {
-    
+    this.props.navigate(location)
     try {
       console.log('we are going to fire query for ', location)
       // const response = await axios.get('https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search.php?', { params: { q: 'boston', format: 'jsonv2' } });
@@ -69,8 +69,11 @@ class App extends Component {
         // we will try to find it.
         let index
         for(let index_it=0; index_it<this.state.queryResults.length; index_it++){
-          if(this.state.queryResults[index_it]["place_id"]===place_id)
+          console.log(this.state.queryResults[index_it]["place_id"], "~~~~~~~~~",Number(place_id))
+          if(this.state.queryResults[index_it]["place_id"]===Number(place_id))
           {
+            console.log('if block satisfied')
+            index = index_it
             this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
             return this.state.queryResults[index_it]
           }
@@ -78,6 +81,7 @@ class App extends Component {
         if(index){
           console.log('How come your code is here, is God intervening')
         }else{
+          console.log('error fired from findLocationByPlaceId function')
           //Could not find the place from this place id.
           // Will throw out an error
           throw new Error("Couldn't find the place by place id")

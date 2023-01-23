@@ -20,10 +20,10 @@ class SearchResults extends Component {
                 <div id="QueryResult" name="QueryResult" size={Math.min(10, this.props.results.length)} >
                     {this.props.results.map((search_result, index) => (
                         <div key={index} onClick={() => this.handleClick(search_result)} className="cursor-pointer rounded-2xl  p-4 shadow-xl">
-                          <div class="block rounded-xl bg-white p-6 sm:p-8" href="">
+                          <div className="block rounded-xl bg-white p-6 sm:p-8" href="">
 
                             <div className="mt-16 sm:pr-8">
-                            <h3 class="text-xl font-bold text-gray-900">
+                            <h3 className="text-xl font-bold text-gray-900">
 
                                 {search_result['display_name']}
                             </h3>
