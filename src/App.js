@@ -26,9 +26,9 @@ class App extends Component {
         this.setState({searchQuery: decodeURI(location)})
         let place_id = pathname.substr(lastIndexOfDelimiter+1, )
         console.log('We are going to work for place_id',place_id)
-        this.fetchDataFromBackend(decodeURI(location)).then(()=>{
-          this.findLocationByPlaceId(place_id)
-        } )
+        await this.fetchDataFromBackend(decodeURI(location))
+        this.findLocationByPlaceId(place_id)
+        
       }else{
         throw new Error('search query looks empty')
       }
@@ -88,6 +88,7 @@ class App extends Component {
         }
       }
     } catch (error) {
+      console.log('error at findlocation by placeId')
       // Check if 
       if(this.state.queryResults){
         // Try setting the first one
