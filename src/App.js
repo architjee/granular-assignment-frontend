@@ -4,6 +4,7 @@ import { Component, createRef } from 'react';
 import './App.css';
 import SearchResults from './SearchResults';
 import { MapContainer, Polygon, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useNavigate } from "react-router-dom";
 
 const polygon = [
   [51.515, -0.09],
@@ -18,6 +19,8 @@ class App extends Component {
 
   }
   async fetchDataFromBackend(location) {
+    this.props.navigate(location);
+    
     try {
       console.log('we are going to fire query for ', location)
       // const response = await axios.get('https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search.php?', { params: { q: 'boston', format: 'jsonv2' } });
@@ -33,6 +36,7 @@ class App extends Component {
   }
   constructor(props) {
     super(props);
+    console.log('this.props.crea', this.props.history)
     this.state = {
       searchState: true,
       searchQuery: 'Boston MA', queryResults: [],
@@ -101,7 +105,7 @@ class App extends Component {
         {
 
           <div className="dropdown-content">
-            {<SearchResults results={this.state.queryResults} onHandleChange={(e) => this.parentHandleChange(e)}></SearchResults>}
+            {<SearchResults results={this.state.queryResults} onHandleChange={(e) => this.parentHandleChange(e)} propUseNavigate={this.props.navigate}></SearchResults>}
           </div>
         }
     </div>
@@ -109,4 +113,12 @@ class App extends Component {
   }
 }
 
-export default App
+
+function AppWithNavigate(props) {
+  let navigate = useNavigate();
+  return <App navigate={navigate} />
+}
+
+export default AppWithNavigate
+
+

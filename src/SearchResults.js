@@ -8,13 +8,14 @@ class SearchResults extends Component {
         super(props);
         this.state = { searchQuery: '' };
         this.handleClick = this.handleClick.bind(this);
-
+        
     }
 
 
     handleClick(e) {
         console.log('even fired is ', e)
-        this.setState({ searchQuery: e.target.value });
+        console.log('propusenagivate is ', this.props.propUseNavigate)
+        this.props.propUseNavigate('helo')
         console.log("Fruit Selected!!", this.state);
     }
     render() {
