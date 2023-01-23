@@ -5,6 +5,7 @@ import './App.css';
 import SearchResults from './SearchResults';
 import { MapContainer, Polygon, TileLayer} from 'react-leaflet';
 import { useNavigate, useLocation } from "react-router-dom";
+import { ConvertPlaceObject } from './Util';
 var HOSTED_URL = "http://localhost:3000/#"
 
 
@@ -16,12 +17,18 @@ class App extends Component {
       if(pathname && pathname.length>1){
 
         let lastIndexOfDelimiter = pathname.lastIndexOf('/')
-        console.log(pathname, 'looks like this')
-        location = pathname.substr(1, lastIndexOfDelimiter)
+        location = pathname.substr(1, lastIndexOfDelimiter-1)
         this.setState({'searchQuery': location})
         console.log('changing location to ', location)
+        if(!location){
+          location = pathname
+        }
+        this.setState({searchQuery: location})
         let place_id = pathname.substr(lastIndexOfDelimiter+1, )
-        this.fetchDataFromBackend(location).then(this.findLocationByPlaceId(place_id))
+        console.log('We are going to work for place_id',place_id)
+        this.fetchDataFromBackend(location).then(()=>{
+          this.findLocationByPlaceId(place_id)
+        } )
       }else{
         throw new Error('search query looks empty')
       }
@@ -34,24 +41,59 @@ class App extends Component {
 
   }
   async fetchDataFromBackend(location) {
-  
+    
     try {
       console.log('we are going to fire query for ', location)
       // const response = await axios.get('https://cors-anywhere.herokuapp.com/https://nominatim.openstreetmap.org/search.php?', { params: { q: 'boston', format: 'jsonv2' } });
       const response = await axios.get('https://nominatim.openstreetmap.org/search.php?', { params: { q: location, format: 'jsonv2' } });
       console.log('response from axios request', response);
+      let filtered_response = []
+      if (response.data && response.data.length>0){
+        for(let i=0; i<response.data.length; i++){
+          if (response.data[i]["type"]=="administrative"){
+            filtered_response.push(response.data[i])
+          }
+        }
+      }
+
       this.setState({
-        queryResults: response.data
+        queryResults: filtered_response
       });
     } catch (error) {
       console.error(error);
     }
   }
   findLocationByPlaceId(place_id){
+    try {
+      if(place_id && this.state.queryResults ){
+        // we will try to find it.
+        let index
+        for(let index_it=0; index_it<this.state.queryResults.length; index_it++){
+          if(this.state.queryResults[index_it]["place_id"]==place_id)
+          {
+            this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
+            return this.state.queryResults[index_it]
+          }
+        }
+        if(index){
+          console.log('How come your code is here, is God intervening')
+        }else{
+          //Could not find the place from this place id.
+          // Will throw out an error
+          throw new Error("Couldn't find the place by place id")
+        }
+      }
+    } catch (error) {
+      // Check if 
+      if(this.state.queryResults){
+        // Try setting the first one
+
+      }
+    }
     console.log('getting placeid')
   }
   setNewLocation(newLocationObject) {
-    this.props.navigate(this.state.searchQuery+'/'+this.state.locationObject["placeid"]);
+    this.props.navigate(this.state.searchQuery+'/'+newLocationObject["placeid"]);
     this.setState({ 'locationObject': newLocationObject })
 
   }
