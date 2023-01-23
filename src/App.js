@@ -88,7 +88,7 @@ class App extends Component {
         }
       }
     } catch (error) {
-      console.log('error at findlocation by placeId')
+      console.log('error at findlocation by placeId', error)
       // Check if 
       if(this.state.queryResults){
         // Try setting the first one
