@@ -67,7 +67,7 @@ class App extends Component {
     try {
       if(place_id && this.state.queryResults ){
         // we will try to find it.
-        let index
+        let index 
         for(let index_it=0; index_it<this.state.queryResults.length; index_it++){
           console.log(this.state.queryResults[index_it]["place_id"], "~~~~~~~~~",Number(place_id))
           if(this.state.queryResults[index_it]["place_id"]===Number(place_id))
@@ -94,7 +94,7 @@ class App extends Component {
         this.setNewLocation(ConvertPlaceObject(this.state.queryResults[0]))
       }
     }
-    console.log('getting placeid')
+    console.log('Exiting findLocationByPlaceId')
   }
   setNewLocation(newLocationObject) {
     this.props.navigate(this.state.searchQuery+'/'+newLocationObject["placeid"]);
