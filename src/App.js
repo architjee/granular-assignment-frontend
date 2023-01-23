@@ -50,7 +50,7 @@ class App extends Component {
       let filtered_response = []
       if (response.data && response.data.length>0){
         for(let i=0; i<response.data.length; i++){
-          if (response.data[i]["type"]=="administrative"){
+          if (response.data[i]["type"]==="administrative"){
             filtered_response.push(response.data[i])
           }
         }
@@ -69,7 +69,7 @@ class App extends Component {
         // we will try to find it.
         let index
         for(let index_it=0; index_it<this.state.queryResults.length; index_it++){
-          if(this.state.queryResults[index_it]["place_id"]==place_id)
+          if(this.state.queryResults[index_it]["place_id"]===place_id)
           {
             this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
             return this.state.queryResults[index_it]
