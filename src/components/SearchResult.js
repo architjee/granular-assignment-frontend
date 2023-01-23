@@ -11,13 +11,16 @@ class SearchResult extends Component {
     }
     render() {
         return (
-            <li>
-                <div className='card'>
+          
+                
 
-                <button>{this.props.content['place_id']}</button>
-                </div>
+               <span>
+                   {this.props.content['place_id']}
 
-            </li>
+               </span> 
+                
+
+      
                 
         );
     }

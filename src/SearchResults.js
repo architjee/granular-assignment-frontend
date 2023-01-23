@@ -7,34 +7,26 @@ class SearchResults extends Component {
     constructor(props) {
         super(props);
         this.state = { searchQuery: '' };
-        this.handleClick = this.handleClick.bind(this)
+        this.handleClick = this.handleClick.bind(this);
+
     }
 
 
-    handleClick(event) {
-
-        console.log('even fired', event)
-        alert('A name was submitted: ' + this.state);
+    handleClick(e) {
+        console.log('even fired is ', e)
+        this.setState({ searchQuery: e.target.value });
+        console.log("Fruit Selected!!", this.state);
     }
     render() {
-        return (<div>
+        return (
+            <div>
+                <div id="QueryResult" name="QueryResult" size={Math.min(10, this.props.results.length)} >
+                    {this.props.results.map((search_result, index) => (search_result["type"] == "administrative" &&
+                        <div key={index} onClick={this.handleClick}>{search_result['place_id']}</div>
+                    ))}
+                </div>
 
-            <button >x</button>
-                <select name="cars" id="cars">
-            
-                {this.props.results.map((search_result, index) => (search_result["type"] == "administrative" &&
-                    <SearchResult key={index} content={search_result} onClick={this.handleClick}></SearchResult>
-                ))}
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="mercedes">Mercedes</option>
-  <option value="audi">Audi</option>
-            
-</select>
-
-
-
-        </div>
+            </div>
         );
     }
 }

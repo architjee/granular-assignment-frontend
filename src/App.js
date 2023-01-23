@@ -53,9 +53,13 @@ class App extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    alert('A name was submitted: ' + this.state.searchQuery);
+   
+    this.fetchDataFromBackend(this.state.searchQuery)
+    alert('Debug: ' + this.state.searchQuery);
   }
-
+  parentHandleChange(params){
+    console.log("params passed to parent's call back function",params)
+  }
 
   handleBlur(event) {
     this.setState({ searchState: false });
@@ -90,16 +94,16 @@ class App extends Component {
           Name:
           <input ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery} onBlur={this.handleBlur} onFocus={this.handleFocus} onChange={this.handleChange} />
         </label>
-        {this.state.searchState &&
-
-          <div className="dropdown-content">
-            {<SearchResults results={this.state.queryResults}></SearchResults>}
-          </div>
-        }
         <input type="submit" value="Submit" />
 
         {this.state.selectedCentre}
       </form>
+        {
+
+          <div className="dropdown-content">
+            {<SearchResults results={this.state.queryResults} onHandleChange={(e) => this.parentHandleChange(e)}></SearchResults>}
+          </div>
+        }
     </div>
     );
   }
