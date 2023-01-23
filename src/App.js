@@ -10,7 +10,7 @@ var HOSTED_URL = "https://granular-assignment-frontend.netlify.app/#"
 
 
 class App extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     let location
     try {
       let pathname =  this.props.location.pathname
@@ -170,8 +170,8 @@ class App extends Component {
         style={{ width: "600px", height: "calc(400px)" }}
       >
         <TileLayer key={'tile_' + this.state.locationObject.placeid}
-          url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         <Polygon key={'polygon_' + this.state.locationObject.placeid} pathOptions={this.state.locationObject.purpleOptions} positions={this.state.locationObject.polygon} />
 
