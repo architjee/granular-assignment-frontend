@@ -19,14 +19,14 @@ class App extends Component {
         let lastIndexOfDelimiter = pathname.lastIndexOf('/')
         location = pathname.substr(1, lastIndexOfDelimiter-1)
         this.setState({'searchQuery': location})
-        console.log('changing location to ', location)
+        console.log('changing location to ', decodeURI(location))
         if(!location){
           location = pathname
         }
-        this.setState({searchQuery: location})
+        this.setState({searchQuery: decodeURI(location)})
         let place_id = pathname.substr(lastIndexOfDelimiter+1, )
         console.log('We are going to work for place_id',place_id)
-        this.fetchDataFromBackend(location).then(()=>{
+        this.fetchDataFromBackend(decodeURI(location)).then(()=>{
           this.findLocationByPlaceId(place_id)
         } )
       }else{
@@ -87,7 +87,7 @@ class App extends Component {
       // Check if 
       if(this.state.queryResults){
         // Try setting the first one
-
+        this.setNewLocation(ConvertPlaceObject(this.state.queryResults[0]))
       }
     }
     console.log('getting placeid')
@@ -153,11 +153,13 @@ class App extends Component {
 
   render() {
 
-    return (<div>
+    return (<div className='container w-md max-w-md mx-auto py-8 '>
 
+<h1 className="text-3xl font-bold underline py-3 pt-4">
+      Location finder :::
+    </h1>
 
-
-      <MapContainer key={'container_' + this.state.locationObject.placeid}
+      <MapContainer className='pt-4' key={'container_' + this.state.locationObject.placeid}
         center={this.state.locationObject.center}
         zoom={13}
         scrollWheelZoom={true}
@@ -170,13 +172,13 @@ class App extends Component {
         <Polygon key={'polygon_' + this.state.locationObject.placeid} pathOptions={this.state.locationObject.purpleOptions} positions={this.state.locationObject.polygon} />
 
       </MapContainer>
-      <button onClick={() => {navigator.clipboard.writeText(HOSTED_URL+this.props.location.pathname)}}>Copy Link</button>
+      <button className='underline' onClick={() => {navigator.clipboard.writeText(HOSTED_URL+this.props.location.pathname)}}>Copy Link</button>
 
 
       <form onSubmit={this.handleSubmit} className="search-form">
-        <label >
-          Name:
-          <input ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery}  onChange={this.handleChange} />
+        <label className='border' >
+          Search Location By Keywords : 
+          <input className='border-2' ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery}  onChange={this.handleChange} />
         </label>
         <input type="submit" value="Submit" />
 
