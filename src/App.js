@@ -18,12 +18,12 @@ class App extends Component {
 
         let lastIndexOfDelimiter = pathname.lastIndexOf('/')
         location = pathname.substr(1, lastIndexOfDelimiter - 1)
-        this.setState({ 'searchQuery': location })
+        await this.setState({ 'searchQuery': location })
         console.log('changing location to ', decodeURI(location))
         if (!location) {
           location = pathname
         }
-        this.setState({ searchQuery: decodeURI(location) })
+        await this.setState({ searchQuery: decodeURI(location) })
         let place_id = pathname.substr(lastIndexOfDelimiter + 1,)
         console.log('We are going to work for place_id', place_id)
         await this.fetchDataFromBackend(decodeURI(location))
@@ -35,7 +35,7 @@ class App extends Component {
     } catch (error) {
       console.log('some error occured, changing back to fallback state', error)
       location = "Boston MA"
-      this.setState({ searchQuery: location })
+      await this.setState({ searchQuery: location })
       this.fetchDataFromBackend(location)
     }
 
@@ -56,7 +56,7 @@ class App extends Component {
         }
       }
 
-      this.setState({
+     await this.setState({
         queryResults: filtered_response
       });
     } catch (error) {
@@ -96,9 +96,9 @@ class App extends Component {
     }
     console.log('Exiting findLocationByPlaceId')
   }
-  setNewLocation(newLocationObject) {
+  async setNewLocation(newLocationObject) {
     this.props.navigate(this.state.searchQuery + '/' + newLocationObject["placeid"]);
-    this.setState({ 'locationObject': newLocationObject })
+    await this.setState({ 'locationObject': newLocationObject })
 
   }
   constructor(props) {
@@ -144,13 +144,13 @@ class App extends Component {
     this.setNewLocation = this.setNewLocation.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ searchQuery: event.target.value });
+  async handleChange(event) {
+    await this.setState({ searchQuery: event.target.value });
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
-    this.fetchDataFromBackend(this.state.searchQuery)
+    await this.fetchDataFromBackend(this.state.searchQuery)
   }
 
 
