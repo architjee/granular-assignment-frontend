@@ -27,7 +27,7 @@ class App extends Component {
         let place_id = pathname.substr(lastIndexOfDelimiter + 1,)
         console.log('We are going to work for place_id', place_id)
         await this.fetchDataFromBackend(decodeURI(location))
-        this.findLocationByPlaceId(place_id)
+        await this.findLocationByPlaceId(place_id)
 
       } else {
         throw new Error('search query looks empty')
@@ -63,7 +63,7 @@ class App extends Component {
       console.error(error);
     }
   }
-  findLocationByPlaceId(place_id) {
+  async findLocationByPlaceId(place_id) {
     try {
 
       // we will try to find it.
