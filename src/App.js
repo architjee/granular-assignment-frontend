@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Component, createRef } from 'react';
 import './App.css';
 import SearchResults from './SearchResults';
-import { MapContainer, Polygon, TileLayer} from 'react-leaflet';
+import { MapContainer, Polygon, TileLayer } from 'react-leaflet';
 import { useNavigate, useLocation } from "react-router-dom";
 import { ConvertPlaceObject } from './Util';
 var HOSTED_URL = "https://granular-assignment-frontend.netlify.app/#"
@@ -13,29 +13,29 @@ class App extends Component {
   async componentDidMount() {
     let location
     try {
-      let pathname =  this.props.location.pathname
-      if(pathname && pathname.length>1){
+      let pathname = this.props.location.pathname
+      if (pathname && pathname.length > 1) {
 
         let lastIndexOfDelimiter = pathname.lastIndexOf('/')
-        location = pathname.substr(1, lastIndexOfDelimiter-1)
-        this.setState({'searchQuery': location})
+        location = pathname.substr(1, lastIndexOfDelimiter - 1)
+        this.setState({ 'searchQuery': location })
         console.log('changing location to ', decodeURI(location))
-        if(!location){
+        if (!location) {
           location = pathname
         }
-        this.setState({searchQuery: decodeURI(location)})
-        let place_id = pathname.substr(lastIndexOfDelimiter+1, )
-        console.log('We are going to work for place_id',place_id)
+        this.setState({ searchQuery: decodeURI(location) })
+        let place_id = pathname.substr(lastIndexOfDelimiter + 1,)
+        console.log('We are going to work for place_id', place_id)
         await this.fetchDataFromBackend(decodeURI(location))
         this.findLocationByPlaceId(place_id)
-        
-      }else{
+
+      } else {
         throw new Error('search query looks empty')
       }
     } catch (error) {
       console.log('some error occured, changing back to fallback state', error)
       location = "Boston MA"
-      this.setState({searchQuery: location})
+      this.setState({ searchQuery: location })
       this.fetchDataFromBackend(location)
     }
 
@@ -48,9 +48,9 @@ class App extends Component {
       const response = await axios.get('https://nominatim.openstreetmap.org/search.php?', { params: { q: location, format: 'jsonv2' } });
       console.log('response from axios request', response);
       let filtered_response = []
-      if (response.data && response.data.length>0){
-        for(let i=0; i<response.data.length; i++){
-          if (response.data[i]["type"]==="administrative"){
+      if (response.data && response.data.length > 0) {
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i]["type"] === "administrative") {
             filtered_response.push(response.data[i])
           }
         }
@@ -63,34 +63,33 @@ class App extends Component {
       console.error(error);
     }
   }
-  findLocationByPlaceId(place_id){
+  findLocationByPlaceId(place_id) {
     try {
-      if(place_id && this.state.queryResults ){
-        // we will try to find it.
-        let index 
-        for(let index_it=0; index_it<this.state.queryResults.length; index_it++){
-          console.log(this.state.queryResults[index_it]["place_id"], "~~~~~~~~~",Number(place_id))
-          if(this.state.queryResults[index_it]["place_id"]===Number(place_id))
-          {
-            console.log('if block satisfied')
-            index = index_it
-            this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
-            return this.state.queryResults[index_it]
-          }
+
+      // we will try to find it.
+      let index
+      for (let index_it = 0; index_it < this.state.queryResults.length; index_it++) {
+        console.log(String(this.state.queryResults[index_it]["place_id"]), "~~~~~~~~~", String(place_id))
+        if (this.state.queryResults[index_it]["place_id"] === Number(place_id)) {
+          console.log('if block satisfied')
+          index = index_it
+          this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
+          return this.state.queryResults[index_it]
         }
-        if(index){
+
+      }
+        if (index) {
           console.log('How come your code is here, is God intervening')
-        }else{
+        } else {
           console.log('error fired from findLocationByPlaceId function')
           //Could not find the place from this place id.
           // Will throw out an error
           throw new Error("Couldn't find the place by place id")
         }
-      }
     } catch (error) {
       console.log('error at findlocation by placeId', error)
       // Check if 
-      if(this.state.queryResults){
+      if (this.state.queryResults) {
         // Try setting the first one
         this.setNewLocation(ConvertPlaceObject(this.state.queryResults[0]))
       }
@@ -98,7 +97,7 @@ class App extends Component {
     console.log('Exiting findLocationByPlaceId')
   }
   setNewLocation(newLocationObject) {
-    this.props.navigate(this.state.searchQuery+'/'+newLocationObject["placeid"]);
+    this.props.navigate(this.state.searchQuery + '/' + newLocationObject["placeid"]);
     this.setState({ 'locationObject': newLocationObject })
 
   }
@@ -153,16 +152,16 @@ class App extends Component {
     event.preventDefault();
     this.fetchDataFromBackend(this.state.searchQuery)
   }
-  
+
 
 
   render() {
 
     return (<div className='container w-md max-w-md mx-auto py-8 '>
 
-<h1 className="text-3xl font-bold underline py-3 pt-4">
-      Location finder :::
-    </h1>
+      <h1 className="text-3xl font-bold underline py-3 pt-4">
+        Location finder :::
+      </h1>
 
       <MapContainer className='pt-4' key={'container_' + this.state.locationObject.placeid}
         center={this.state.locationObject.center}
@@ -177,20 +176,20 @@ class App extends Component {
         <Polygon key={'polygon_' + this.state.locationObject.placeid} pathOptions={this.state.locationObject.purpleOptions} positions={this.state.locationObject.polygon} />
 
       </MapContainer>
-      <button className='underline' onClick={() => {navigator.clipboard.writeText(HOSTED_URL+this.props.location.pathname)}}>Copy Link</button>
+      <button className='underline' onClick={() => { navigator.clipboard.writeText(HOSTED_URL + this.props.location.pathname) }}>Copy Link</button>
 
 
       <form onSubmit={this.handleSubmit} className="search-form">
         <label className='border' >
-          Search Location By Keywords : 
-          <input className='border-2' ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery}  onChange={this.handleChange} />
+          Search Location By Keywords :
+          <input className='border-2' ref={this.inputFocus.ref} autoFocus type="text" value={this.state.searchQuery} onChange={this.handleChange} />
         </label>
         <input type="submit" value="Submit" />
 
         {this.state.selectedCentre}
       </form>
 
-     
+
       {
 
         <div className="search-results">
