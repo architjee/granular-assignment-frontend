@@ -67,7 +67,7 @@ class App extends Component {
     try {
 
       // we will try to find it.
-      let index
+      
       for (let index_it = 0; index_it < this.state.queryResults.length; index_it++) {
         console.log(String(this.state.queryResults[index_it]["place_id"]), "~~~~~~~~~", String(place_id))
         if (this.state.queryResults[index_it]["place_id"] === Number(place_id)) {
