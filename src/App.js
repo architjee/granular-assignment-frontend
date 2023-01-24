@@ -78,14 +78,7 @@ class App extends Component {
         }
 
       }
-        if (index) {
-          console.log('How come your code is here, is God intervening')
-        } else {
-          console.log('error fired from findLocationByPlaceId function')
-          //Could not find the place from this place id.
-          // Will throw out an error
-          throw new Error("Couldn't find the place by place id")
-        }
+        
     } catch (error) {
       console.log('error at findlocation by placeId', error)
       // Check if 
