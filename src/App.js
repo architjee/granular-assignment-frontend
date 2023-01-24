@@ -72,7 +72,6 @@ class App extends Component {
         console.log(String(this.state.queryResults[index_it]["place_id"]), "~~~~~~~~~", String(place_id))
         if (this.state.queryResults[index_it]["place_id"] === Number(place_id)) {
           console.log('if block satisfied')
-          index = index_it
           this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
           return this.state.queryResults[index_it]
         }
