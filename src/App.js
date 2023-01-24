@@ -18,16 +18,22 @@ class App extends Component {
 
         let lastIndexOfDelimiter = pathname.lastIndexOf('/')
         location = pathname.substr(1, lastIndexOfDelimiter - 1)
-        await this.setState({ 'searchQuery': location })
+         this.setState({ 'searchQuery': location })
         console.log('changing location to ', decodeURI(location))
         if (!location) {
           location = pathname
         }
-        await this.setState({ searchQuery: decodeURI(location) })
+         this.setState({ searchQuery: decodeURI(location) })
         let place_id = pathname.substr(lastIndexOfDelimiter + 1,)
+       
         console.log('We are going to work for place_id', place_id)
         await this.fetchDataFromBackend(decodeURI(location))
-        await this.findLocationByPlaceId(place_id)
+        setTimeout(() => {
+          
+          this.findLocationByPlaceId(place_id)
+          console.log('placeId set')
+        }, 1000);
+        //replace this time out by await that actually works
 
       } else {
         throw new Error('search query looks empty')
@@ -56,7 +62,7 @@ class App extends Component {
         }
       }
 
-     await this.setState({
+     this.setState({
         queryResults: filtered_response
       });
     } catch (error) {
@@ -64,15 +70,17 @@ class App extends Component {
     }
   }
   async findLocationByPlaceId(place_id) {
+   
+    console.log('We are able to take in place_id as a parameter', place_id)
     try {
-
+      place_id = Number(place_id)
       // we will try to find it.
       
       for (let index_it = 0; index_it < this.state.queryResults.length; index_it++) {
         console.log(String(this.state.queryResults[index_it]["place_id"]), "~~~~~~~~~", String(place_id))
         if (this.state.queryResults[index_it]["place_id"] === Number(place_id)) {
           console.log('if block satisfied')
-          this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
+          await this.setNewLocation(ConvertPlaceObject(this.state.queryResults[index_it]))
           return this.state.queryResults[index_it]
         }
 
@@ -86,11 +94,12 @@ class App extends Component {
         this.setNewLocation(ConvertPlaceObject(this.state.queryResults[0]))
       }
     }
+    console.log(this.state.queryResults)
     console.log('Exiting findLocationByPlaceId')
   }
   async setNewLocation(newLocationObject) {
     this.props.navigate(this.state.searchQuery + '/' + newLocationObject["placeid"]);
-    await this.setState({ 'locationObject': newLocationObject })
+    this.setState({ 'locationObject': newLocationObject })
 
   }
   constructor(props) {
